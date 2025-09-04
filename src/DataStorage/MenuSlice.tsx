@@ -22,6 +22,15 @@ const menuSlice = createSlice({
   initialState,
   reducers: {
     addDish: (state, action) => {
+      const dishExists = state.menu.some(
+        (dish) =>
+          dish.dishName.toLowerCase() ===
+          action.payload.dishName.toLowerCase()
+      )
+      if (dishExists) {
+        alert("Dish already exists!");
+        return;
+      }
       const newDish: dishType = {
         id: Date.now(),
         dishName: action.payload.dishName,

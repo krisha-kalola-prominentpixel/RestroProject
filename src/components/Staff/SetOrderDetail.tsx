@@ -30,11 +30,11 @@ function SetOrderDetails() {
     doc.text(`Invoice - Table ${order.tableId}`, 20, 20);
     doc.setFontSize(12);
     doc.text(`Date: ${order.date}`, 20, 30);
-
+    // let inr='₹'
     let y = 50;
     order.items.forEach((item: any, index: number) => {
       doc.text(
-        `${index + 1}. ${item.dishName} x ${item.qty} = ₹${item.price * item.qty}`,
+        `${index + 1}. ${item.dishName} x ${item.qty} = Rs. ${item.price * item.qty}`,
         20,
         y
       );
@@ -43,7 +43,7 @@ function SetOrderDetails() {
 
     doc.text(`--------------------------`, 20, y);
     y += 10;
-    doc.text(`Total: ₹${order.total}`, 20, y);
+    doc.text(`Total: Rs. ${order.total}`, 20, y);
 
     doc.save(`invoice_table_${order.tableId}.pdf`);
   };
@@ -52,7 +52,6 @@ function SetOrderDetails() {
     <div className="min-h-screen bg-amber-50 p-6">
       <h2 className="text-3xl font-bold text-amber-900 mb-6">Staff Panel</h2>
 
-      {/* Table Selection */}
       <div className="mb-6 flex items-center gap-4">
         <label className="text-lg font-semibold text-amber-800">Select Table:</label>
         <select
