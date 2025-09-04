@@ -52,10 +52,23 @@ const menuSlice = createSlice({
     },
     editDish: (state, action) => {
       const { id, updatedDish } = action.payload;
+      const dishExists = state.menu.some(
+        (dish) =>
+          dish.dishName.toLowerCase() ===
+          updatedDish.dishName.toLowerCase()
+      )
+      if (dishExists) {
+        alert("Dish already exists!");
+        return;
+      }
+      else{
+        
       const dishIndex = state.menu.findIndex((d) => d.id === id);
       if (dishIndex !== -1) {
         state.menu[dishIndex] = { ...state.menu[dishIndex], ...updatedDish };
       }
+      }
+      
     },
     resetMenu: (state) => {
       state.menu = [];

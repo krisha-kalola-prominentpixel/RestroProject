@@ -49,13 +49,13 @@ function AdminPage() {
     dispatch(removeDish(id));
   };
 
-  const handleEditCancel=()=>{
+  const handleEditCancel = () => {
     setDishName("");
     setDescription("");
     setPrice("");
     setCategory("Starters");
-    setEditingId(null)
-  }
+    setEditingId(null);
+  };
 
   return (
     <div className="min-h-screen bg-amber-50 p-6">
@@ -125,18 +125,24 @@ function AdminPage() {
             <option>Drinks</option>
           </select>
         </div>
-        <button
-          onClick={handleAddDish}
-          className="mt-4 px-6 py-2 bg-amber-900 text-white rounded hover:bg-amber-700 transition"
-        >
-          {editingId !== null ? "Update Dish" : "Add Dish"}
-        </button>
 
-        <button onClick={handleEditCancel}
-        style={editingId?{display:"block"}:{display:"none"}}
-        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition">
-            Cancel
-        </button>
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={handleAddDish}
+            className="px-6 py-2 bg-amber-900 text-white rounded hover:bg-amber-700 transition"
+          >
+            {editingId !== null ? "Update Dish" : "Add Dish"}
+          </button>
+
+          {editingId !== null && (
+            <button
+              onClick={handleEditCancel}
+              className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-400 transition"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md">
@@ -153,22 +159,25 @@ function AdminPage() {
                 <div>
                   <p className="font-semibold text-amber-900">{dish.dishName}</p>
                   <p className="text-amber-700">{dish.description}</p>
-                  <p className="text-amber-800 font-medium">₹{dish.price} ({dish.category})</p>
+                  <p className="text-amber-800 font-medium">
+                    ₹{dish.price} ({dish.category})
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(dish)}
-                    className="px-3 py-1 bg-amber-900 text-white rounded hover:bg-amber-700 transition"
+                    className="px-4 py-1 bg-amber-900 text-white rounded hover:bg-amber-700 transition"
                   >
                     Edit
                   </button>
-                  <button
-                    style={!editingId?{display:"block"}:{display:"none"}}
-                    onClick={() => handleDelete(dish.id)}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition"
-                  >
-                    Delete
-                  </button>
+                  {editingId !== dish.id && (
+                    <button
+                      onClick={() => handleDelete(dish.id)}
+                      className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </li>
             ))}
