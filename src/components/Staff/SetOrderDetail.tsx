@@ -11,13 +11,10 @@ import jsPDF from "jspdf";
 
 function SetOrderDetails() {
   const dispatch = useDispatch();
-  const tables = useSelector((state: RootState) => state.tables.savedTables) || 0;
-  const menu = useSelector((state: RootState) => state.menu.menu);
+  const tables =useSelector((state: RootState) => state.tables.savedTables) || 0
+  const menu = useSelector((state: RootState) => state.menu.menu)
   const orders = useSelector((state: RootState) => state.orders.orders);
-  const finishedOrders = useSelector(
-    (state: RootState) => state.orders.finishedOrders
-  );
-
+  const finishedOrders = useSelector((state: RootState) => state.orders.finishedOrders);
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
 
   const handleAddOrder = (dish: any) => {
@@ -33,8 +30,13 @@ function SetOrderDetails() {
     // let inr='₹'
     let y = 50;
     order.items.forEach((item: any, index: number) => {
+      const dish = menu.find((d) => d.id === item.id);
+      const latestPrice = dish ? dish.price : item.price;
+
       doc.text(
-        `${index + 1}. ${item.dishName} x ${item.qty} = Rs. ${item.price * item.qty}`,
+        `${index + 1}. ${item.dishName} x ${item.qty} = Rs. ${
+          latestPrice * item.qty
+        }`,
         20,
         y
       );
@@ -53,7 +55,9 @@ function SetOrderDetails() {
       <h2 className="text-3xl font-bold text-amber-900 mb-6">Staff Panel</h2>
 
       <div className="mb-6 flex items-center gap-4">
-        <label className="text-lg font-semibold text-amber-800">Select Table:</label>
+        <label className="text-lg font-semibold text-amber-800">
+          Select Table:
+        </label>
         <select
           value={selectedTable || ""}
           onChange={(e) => setSelectedTable(Number(e.target.value))}
@@ -70,6 +74,7 @@ function SetOrderDetails() {
 
       {selectedTable && (
         <div className="flex flex-col md:flex-row gap-6">
+        
           <div className="flex-1 bg-amber-100 p-4 rounded-2xl shadow-lg">
             <h3 className="text-xl font-semibold text-amber-900 mb-3">Menu</h3>
             <ul className="space-y-2">
@@ -78,7 +83,9 @@ function SetOrderDetails() {
                   key={dish.id}
                   className="flex justify-between items-center p-2 bg-amber-200 rounded-lg hover:bg-amber-300 transition"
                 >
-                  <span>{dish.dishName} - ₹{dish.price}</span>
+                  <span>
+                    {dish.dishName} - ₹{dish.price}
+                  </span>
                   <button
                     onClick={() => handleAddOrder(dish)}
                     className="bg-amber-800 text-amber-50 px-3 py-1 rounded-lg hover:bg-amber-900 transition"
@@ -95,39 +102,51 @@ function SetOrderDetails() {
               Orders for Table {selectedTable}
             </h3>
             <ul className="space-y-2">
-              {(orders[selectedTable] || []).map((o) => (
-                <li
-                  key={o.id}
-                  className="flex justify-between items-center p-2 bg-amber-200 rounded-lg hover:bg-amber-300 transition"
-                >
-                  <span>{o.dishName} - ₹{o.price} × {o.qty}</span>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        dispatch(
-                          increaseQty({ tableId: selectedTable, dishId: o.id })
-                        )
-                      }
-                      className="bg-green-600 px-2 py-1 rounded hover:bg-green-700 text-white"
-                    >
-                      +
-                    </button>
-                    <button
-                      onClick={() =>
-                        dispatch(
-                          decreaseQty({ tableId: selectedTable, dishId: o.id })
-                        )
-                      }
-                      className="bg-red-600 px-2 py-1 rounded hover:bg-red-700 text-white"
-                    >
-                      -
-                    </button>
-                  </div>
-                </li>
-              ))}
+              {(orders[selectedTable] || []).map((o) => {
+                const dish = menu.find((d) => d.id === o.id);
+                const latestPrice = dish ? dish.price : o.price;
+
+                return (
+                  <li
+                    key={o.id}
+                    className="flex justify-between items-center p-2 bg-amber-200 rounded-lg hover:bg-amber-300 transition"
+                  >
+                    <span>
+                      {o.dishName} - ₹{latestPrice} × {o.qty}
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() =>
+                          dispatch(
+                            increaseQty({ tableId: selectedTable, dishId: o.id })
+                          )
+                        }
+                        className="bg-green-600 px-2 py-1 rounded hover:bg-green-700 text-white"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() =>
+                          dispatch(
+                            decreaseQty({ tableId: selectedTable, dishId: o.id })
+                          )
+                        }
+                        className="bg-red-600 px-2 py-1 rounded hover:bg-red-700 text-white"
+                      >
+                        -
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
             <p className="mt-4 font-bold text-amber-900">
-              Total: ₹{(orders[selectedTable] || []).reduce((sum, item) => sum + item.price * item.qty, 0)}
+              Total: ₹
+              {(orders[selectedTable] || []).reduce((sum, item) => {
+                const dish = menu.find((d) => d.id === item.id);
+                const latestPrice = dish ? dish.price : item.price;
+                return sum + latestPrice * item.qty;
+              }, 0)}
             </p>
             <button
               onClick={() => dispatch(finishOrder(selectedTable))}
@@ -139,7 +158,9 @@ function SetOrderDetails() {
         </div>
       )}
       <div className="mt-8">
-        <h3 className="text-2xl font-semibold text-amber-900 mb-3">Finished Orders</h3>
+        <h3 className="text-2xl font-semibold text-amber-900 mb-3">
+          Finished Orders
+        </h3>
         <ul className="space-y-2">
           {finishedOrders.map((order, idx) => (
             <li
