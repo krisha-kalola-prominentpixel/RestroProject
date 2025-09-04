@@ -131,14 +131,6 @@ function AdminPage() {
         >
           {editingId !== null ? "Update Dish" : "Add Dish"}
         </button>
-        {/* <br/>
-        <button
-            onClick={() => handleDelete(editingId)}
-            style={editingId?{display:"block"}:{display:"none"}}
-            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition"
-            >
-            Delete
-        </button> */}
 
         <button onClick={handleEditCancel}
         style={editingId?{display:"block"}:{display:"none"}}
