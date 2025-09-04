@@ -45,9 +45,17 @@ function AdminPage() {
     setEditingId(dish.id);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: number | null) => {
     dispatch(removeDish(id));
   };
+
+  const handleEditCancel=()=>{
+    setDishName("");
+    setDescription("");
+    setPrice("");
+    setCategory("Starters");
+    setEditingId(null)
+  }
 
   return (
     <div className="min-h-screen bg-amber-50 p-6">
@@ -123,6 +131,20 @@ function AdminPage() {
         >
           {editingId !== null ? "Update Dish" : "Add Dish"}
         </button>
+        {/* <br/>
+        <button
+            onClick={() => handleDelete(editingId)}
+            style={editingId?{display:"block"}:{display:"none"}}
+            className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition"
+            >
+            Delete
+        </button> */}
+
+        <button onClick={handleEditCancel}
+        style={editingId?{display:"block"}:{display:"none"}}
+        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition">
+            Cancel
+        </button>
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-md">
@@ -149,6 +171,7 @@ function AdminPage() {
                     Edit
                   </button>
                   <button
+                    style={!editingId?{display:"block"}:{display:"none"}}
                     onClick={() => handleDelete(dish.id)}
                     className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition"
                   >
