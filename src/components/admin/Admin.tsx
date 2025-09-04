@@ -45,7 +45,7 @@ function AdminPage() {
     setEditingId(dish.id);
   };
 
-  const handleDelete = (id: number | null) => {
+  const handleDelete = (id: number ) => {
     dispatch(removeDish(id));
   };
 

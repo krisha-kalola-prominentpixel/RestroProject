@@ -1,19 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type dishType = {
+type DishType = {
   id: number;
-  dishName: any;
-  description: any;
+  dishName: string;
+  description: string;
   price: number;
-  category: any;
-  available: any;
+  category: string;
+  available: boolean;
 };
 
-type menuType = {
-  menu: dishType[];
+type MenuType = {
+  menu: DishType[];
 };
 
-const initialState: menuType = {
+const initialState: MenuType = {
   menu: [],
 };
 
@@ -21,55 +21,77 @@ const menuSlice = createSlice({
   name: "menu",
   initialState,
   reducers: {
-    addDish: (state, action) => {
+    addDish: (
+      state,
+      action: PayloadAction<{
+        dishName: string;
+        description: string;
+        price: number | string;
+        category: string;
+        available: boolean;
+      }>
+    ) => {
       const dishExists = state.menu.some(
         (dish) =>
           dish.dishName.toLowerCase() ===
           action.payload.dishName.toLowerCase()
-      )
+      );
       if (dishExists) {
         alert("Dish already exists!");
         return;
       }
-      const newDish: dishType = {
+      const newDish: DishType = {
         id: Date.now(),
         dishName: action.payload.dishName,
         description: action.payload.description,
-        price: parseFloat(action.payload.price),
+        price: parseFloat(action.payload.price as string),
         category: action.payload.category,
         available: action.payload.available,
       };
       state.menu.push(newDish);
     },
-    removeDish: (state, action) => {
+
+    removeDish: (state, action: PayloadAction<number>) => {
       state.menu = state.menu.filter((dish) => dish.id !== action.payload);
     },
-    toggleAvailability: (state, action) => {
+
+    toggleAvailability: (state, action: PayloadAction<number>) => {
       const dish = state.menu.find((d) => d.id === action.payload);
       if (dish) {
         dish.available = !dish.available;
       }
     },
-    editDish: (state, action) => {
+
+    editDish: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        updatedDish: Partial<DishType>;
+      }>
+    ) => {
       const { id, updatedDish } = action.payload;
+
       const dishExists = state.menu.some(
         (dish) =>
+          dish.id !== id &&
           dish.dishName.toLowerCase() ===
-          updatedDish.dishName.toLowerCase()
-      )
+            updatedDish.dishName?.toLowerCase()
+      );
+
       if (dishExists) {
         alert("Dish already exists!");
         return;
       }
-      else{
-        
+
       const dishIndex = state.menu.findIndex((d) => d.id === id);
       if (dishIndex !== -1) {
-        state.menu[dishIndex] = { ...state.menu[dishIndex], ...updatedDish };
+        state.menu[dishIndex] = {
+          ...state.menu[dishIndex],
+          ...updatedDish,
+        };
       }
-      }
-      
     },
+
     resetMenu: (state) => {
       state.menu = [];
     },
