@@ -31,13 +31,17 @@ const menuSlice = createSlice({
         available: boolean;
       }>
     ) => {
+      if(+(action.payload.price)<=0){
+        alert("price canot be negative")
+        return
+      }
       const dishExists = state.menu.some(
         (dish) =>
           dish.dishName.toLowerCase() ===
-          action.payload.dishName.toLowerCase()
-      );
+          action.payload.dishName.toLowerCase() )
+      
       if (dishExists) {
-        alert("Dish already exists!");
+        alert("Dish already exists! or the price can't be negative");
         return;
       }
       const newDish: DishType = {
@@ -70,7 +74,10 @@ const menuSlice = createSlice({
       }>
     ) => {
       const { id, updatedDish } = action.payload;
-
+      if(+(action.payload.updatedDish.price!)<=0){
+        alert("price canot be negative")
+        return
+      }
       const dishExists = state.menu.some(
         (dish) =>
           dish.id !== id &&
@@ -85,9 +92,7 @@ const menuSlice = createSlice({
 
       const dishIndex = state.menu.findIndex((d) => d.id === id);
       if (dishIndex !== -1) {
-        state.menu[dishIndex] = {
-          ...state.menu[dishIndex],
-          ...updatedDish,
+        state.menu[dishIndex] = {...state.menu[dishIndex],...updatedDish,
         };
       }
     },
